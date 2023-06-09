@@ -1,4 +1,4 @@
-def reducing_matrix_to_triangle(matrix: list, free_vector: list) -> tuple:
+def reducing_matrix_to_triangle(matrix: list, free_vector: list) -> list:
     """
     Прямой ход Гаусса. Функция обрабатывает значения в матрице и приводит матрицу к треугольному виду
     :param matrix: входная матрица (А)
@@ -6,7 +6,6 @@ def reducing_matrix_to_triangle(matrix: list, free_vector: list) -> tuple:
     :return: треугольная матрица, преобразованный вектор свободных членов
     """
 
-    #zero_columns_count: int
     matrix_final = [line for line in matrix]
     free_vector_final = [x for x in free_vector]
 
@@ -67,6 +66,9 @@ reducing_matrix_to_triangle([[3, 2, 1, 1], [1, -1, 4, -1], [-2, -2, -3, 1], [1, 
 
 
 
+
+
+
 def calculation_slae_roots(matrix_res: list, free_vector_res: list) -> list:
     """
     Обратный ход. Решение СЛАУ.
@@ -74,6 +76,11 @@ def calculation_slae_roots(matrix_res: list, free_vector_res: list) -> list:
     :param free_vector_res: преобразованный вектор свободных членов.
     :return: список корней СЛАУ
     """
-    roots_slae = []
+    n = len(matrix_res)
+    roots_slae = [0]*n
+    for i in range(n-1, -1, -1):
+        roots_slae[i] = free_vector_res[i] / matrix_res[i][i]
+        for j in range(i-1, -1, -1):
+            free_vector_res[j] = free_vector_res[j] - matrix_res[j][i] * roots_slae[i]
     return roots_slae
 
