@@ -1,4 +1,4 @@
-def reducing_matrix_to_triangle(matrix: list, free_vector: list) -> list:
+def reducing_matrix_to_triangle(matrix: list, free_vector: list) -> tuple:
     """
     Прямой ход Гаусса. Функция обрабатывает значения в матрице и приводит матрицу к треугольному виду
     :param matrix: входная матрица (А)
@@ -17,24 +17,12 @@ def reducing_matrix_to_triangle(matrix: list, free_vector: list) -> list:
 
         j = 1
         for raw in matrix[1::]:
-            new_raw: list = []
-            matrix_res.append(new_raw)
+            matrix_res.append(new_raw := [])
             i = 0
-
             for element in raw:
-                # if el=0 pass
-                a = matrix[0][i]
-                b = raw[0]
-                c = matrix[0][0]
-                new_element = element - a * (b / c)
-                new_raw.append(new_element)
+                new_raw.append(element - matrix[0][i] * (raw[0] / matrix[0][0]))
                 i += 1
-            ee = free_vector[j]
-            ea = free_vector[0]
-            eb = raw[0]
-            ec = matrix[0][0]
-            vector = ee - ea * (eb / ec)
-            free_vector_res.append(vector)
+            free_vector_res.append(free_vector[j] - free_vector[0] * (raw[0] / matrix[0][0]))
             j += 1
 
         else:
@@ -57,16 +45,8 @@ def reducing_matrix_to_triangle(matrix: list, free_vector: list) -> list:
                 matrix_.append(list(part[1:]))
             column_to_zero(matrix_, free_vector_res)
 
-
     column_to_zero(matrix, free_vector)
-    return (matrix_final, free_vector_final)
-
-reducing_matrix_to_triangle([[1, 2, 1], [3, -1, -1], [-2, 2, 3]], [0, 0, 11])
-reducing_matrix_to_triangle([[3, 2, 1, 1], [1, -1, 4, -1], [-2, -2, -3, 1], [1, 5, -1, 2]], [2, -1, 9, 4])
-
-
-
-
+    return matrix_final, free_vector_final
 
 
 def calculation_slae_roots(matrix_res: list, free_vector_res: list) -> list:
@@ -77,10 +57,21 @@ def calculation_slae_roots(matrix_res: list, free_vector_res: list) -> list:
     :return: список корней СЛАУ
     """
     n = len(matrix_res)
-    roots_slae = [0]*n
-    for i in range(n-1, -1, -1):
+    roots_slae = [0] * n
+    for i in range(n - 1, -1, -1):
         roots_slae[i] = free_vector_res[i] / matrix_res[i][i]
-        for j in range(i-1, -1, -1):
+        for j in range(i - 1, -1, -1):
             free_vector_res[j] = free_vector_res[j] - matrix_res[j][i] * roots_slae[i]
     return roots_slae
 
+
+A = [[10, 1, 1], [2, 10, 1], [2, 2, 10]]
+b = [12, 13, 14]
+
+
+def main(A, b):
+   treulo_matr = reducing_matrix_to_triangle(A, b)
+   print(treulo_matr)
+   A_rez, b_rez = treulo_matr
+   print(calculation_slae_roots(A_rez, b_rez))
+main(A,b)
